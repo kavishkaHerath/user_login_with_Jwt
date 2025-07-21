@@ -13,18 +13,22 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        final String userEmail;
+        if(authHeader != null && authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-
+        jwt = authHeader.substring(7); //Why position number seven because if we count Bearer with this space the count is seven
+        userEmail = jwtService.extractUsername(jwt);
     }
 }
