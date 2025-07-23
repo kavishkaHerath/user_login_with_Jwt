@@ -16,7 +16,10 @@ public class JwtService {
     public String extractUsername(String token) {
         return null;
     }
-
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final  Claims claims = extractClaims(token);
+        return claimsResolver.apply(claims);
+    }
 
 
     private Claims extractClaims(String token) {
